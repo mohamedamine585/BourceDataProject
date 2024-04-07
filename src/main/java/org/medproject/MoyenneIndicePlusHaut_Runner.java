@@ -15,14 +15,14 @@ public class MoyenneIndicePlusHaut_Runner {
         }
 
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "Moyenne Indice Plus Haut Calculation");
+        Job job = Job.getInstance(conf, "Moyenne Indice Plus Haut et Plus Bas Calculation");
         job.setJarByClass(MoyenneIndicePlusHaut_Runner.class);
 
         job.setMapperClass(MoyenneIndicePlusHaut_Mapper.class);
         job.setReducerClass(MoyenneIndicePlusHaut_Reducer.class);
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(DoublePair.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

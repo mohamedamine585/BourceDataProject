@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 
-public class MoyenneIndicePlusHaut_Mapper extends Mapper<LongWritable, Text, Text, DoublePair> {
+public class AverageMaxMinIndexMapper extends Mapper<LongWritable, Text, Text, DoublePair> {
 
     private Text Key = new Text("Indices");
     

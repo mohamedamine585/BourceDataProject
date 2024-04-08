@@ -3,7 +3,7 @@ import java.io.IOException;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 
-public class MoyenneIndicePlusHaut_Reducer extends Reducer<Text, DoublePair, Text, DoubleWritable> {
+public class AverageMaxMinIndexReducer extends Reducer<Text, DoublePair, Text, DoubleWritable> {
 
     @Override
     public void reduce(Text key, Iterable<DoublePair> values, Context context) throws IOException, InterruptedException {
@@ -18,7 +18,7 @@ public class MoyenneIndicePlusHaut_Reducer extends Reducer<Text, DoublePair, Tex
         }
         double MoyenneIndicePlusHaut = (double) sumIndicePlusHaut / count;
         double MoyenneIndicePlusBas = (double) sumIndicePlusBas / count;
-        context.write(new Text("Moyenne INDICE_PLUS_HAUT"), new DoubleWritable(MoyenneIndicePlusHaut));
-         context.write(new Text("Moyenne INDICE_PLUS_BAS"), new DoubleWritable(MoyenneIndicePlusBas));
+        context.write(new Text("Average Max Index"), new DoubleWritable(MoyenneIndicePlusHaut));
+         context.write(new Text("Average Min Index"), new DoubleWritable(MoyenneIndicePlusBas));
     }
 }

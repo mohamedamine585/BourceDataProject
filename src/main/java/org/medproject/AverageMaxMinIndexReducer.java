@@ -18,6 +18,7 @@ public class AverageMaxMinIndexReducer extends Reducer<Text, DoublePair, Text, D
         }
         double MoyenneIndicePlusHaut = (double) sumIndicePlusHaut / count;
         double MoyenneIndicePlusBas = (double) sumIndicePlusBas / count;
+        context.write(key, null);
         context.write(new Text("Average Max Index"), new DoubleWritable(MoyenneIndicePlusHaut));
          context.write(new Text("Average Min Index"), new DoubleWritable(MoyenneIndicePlusBas));
     }

@@ -4,6 +4,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Runner {
@@ -18,6 +19,8 @@ public class Runner {
        
         Job job1 = Job.getInstance(conf, "Average of Max & Min Index Calculation");
         conf.setInt("WINDOW_SIZE", Integer.parseInt(args[2]));
+  
+   
         job1.setJarByClass(Runner.class);
 
         job1.setMapperClass(AverageMaxMinIndexMapper.class);
@@ -28,6 +31,8 @@ public class Runner {
         job1.setOutputValueClass(DoublePair.class);
 
         Job job2 = Job.getInstance(conf, "Mobile Average Calculation");
+        job2.setInputFormatClass(TextInputFormat.class);
+        TextInputFormat.addInputPath(job2, new Path(args[0])); 
 
         job2.setJarByClass(Runner.class);
         
@@ -39,11 +44,25 @@ public class Runner {
         job2.setOutputKeyClass(Text.class);
         job2.setOutputValueClass(DoubleWritable.class);
 
+    
+        
+        Job job3 = Job.getInstance(conf,"Deviation calculation");
+        job3.setJarByClass(Runner.class);
+        
+
+        job3.setMapperClass(DeviationMapper.class);
+        
+        job3.setReducerClass(DeviationReducer.class);
+      
+        job3.setOutputKeyClass(Text.class);
+        job3.setOutputValueClass(DoubleWritable.class);
         FileInputFormat.addInputPath(job1, new Path(args[0]));
         FileInputFormat.addInputPath(job2, new Path(args[0]));
+        FileInputFormat.addInputPath(job3, new Path(args[0]));
         FileOutputFormat.setOutputPath(job1, new Path(args[1],"output_job1"));
         FileOutputFormat.setOutputPath(job2, new Path(args[1],"output_job2"));
+        FileOutputFormat.setOutputPath(job3, new Path(args[1],"output_job3"));
 
-        System.exit((job1.waitForCompletion(true) && job2.waitForCompletion(true)) ? 0 : 1);
+        System.exit((job1.waitForCompletion(true) && job2.waitForCompletion(true) && job3.waitForCompletion(true)) ? 0 : 1);
     }
 }

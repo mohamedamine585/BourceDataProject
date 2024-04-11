@@ -10,8 +10,13 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 public class DeviationMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
     private Text filename = new Text();
+    private boolean skipFirstLine = true;
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+    if (skipFirstLine) {
+        skipFirstLine = false;
+        return; // Skip processing the first line
+    }
         String[] tokens = value.toString().split(",");
         if (tokens.length >= 5) {
             String fileNameString = ((FileSplit) context.getInputSplit()).getPath().getName();

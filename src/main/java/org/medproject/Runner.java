@@ -32,7 +32,7 @@ public class Runner {
 
         Job job2 = Job.getInstance(conf, "Mobile Average Calculation");
         job2.setInputFormatClass(TextInputFormat.class);
-        TextInputFormat.addInputPath(job2, new Path(args[0])); 
+        TextInputFormat.addInputPath(job2, new Path(args[0]+"/indice/")); 
 
         job2.setJarByClass(Runner.class);
         
@@ -56,13 +56,29 @@ public class Runner {
       
         job3.setOutputKeyClass(Text.class);
         job3.setOutputValueClass(DoubleWritable.class);
-        FileInputFormat.addInputPath(job1, new Path(args[0]));
-        FileInputFormat.addInputPath(job2, new Path(args[0]));
-        FileInputFormat.addInputPath(job3, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job1, new Path(args[1],"output_job1"));
-        FileOutputFormat.setOutputPath(job2, new Path(args[1],"output_job2"));
-        FileOutputFormat.setOutputPath(job3, new Path(args[1],"output_job3"));
+          
+        Job job4 = Job.getInstance(conf,"Sector Analysis");
+        job4.setJarByClass(Runner.class);
+        
 
-        System.exit((job1.waitForCompletion(true) && job2.waitForCompletion(true) && job3.waitForCompletion(true)) ? 0 : 1);
+        job4.setMapperClass(SectorAnalysisMapper.class);
+        
+        job4.setReducerClass(SectorAnalysisReducer.class);
+      
+        job4.setOutputKeyClass(Text.class);
+        job4.setOutputValueClass(DoubleWritable.class);
+      
+      
+        FileInputFormat.addInputPath(job1, new Path(args[0] +"/indice/"));
+        FileInputFormat.addInputPath(job2, new Path(args[0] +"/indice/"));
+        FileInputFormat.addInputPath(job3, new Path(args[0] +"/indice/"));
+        FileInputFormat.addInputPath(job4, new Path(args[0] +"/cotation/"));
+
+        FileOutputFormat.setOutputPath(job1, new Path(args[1]+"/indice/output_job1"));
+        FileOutputFormat.setOutputPath(job2, new Path(args[1]+"/indice/output_job2"));
+        FileOutputFormat.setOutputPath(job3, new Path(args[1]+"/indice/output_job3"));
+        FileOutputFormat.setOutputPath(job4, new Path(args[1]+"/cotation/output_job1"));
+
+        System.exit((job1.waitForCompletion(true) && job2.waitForCompletion(true) && job3.waitForCompletion(true) && job4.waitForCompletion(true)) ? 0 : 1);
     }
 }

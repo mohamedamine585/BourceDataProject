@@ -7,11 +7,20 @@ import org.apache.hadoop.mapreduce.*;
 
 public class MovingAverageMapper extends Mapper<LongWritable, Text,Text, DoubleWritable> {
 
-   
+    private boolean skipFirstLine = true;
+
+
+
+  
+
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
    
     
+        if (skipFirstLine) {
+            skipFirstLine = false;
+            return; // Skip processing the first line
+        }
             
             String[] tokens = value.toString().split(",");
             
@@ -19,13 +28,18 @@ public class MovingAverageMapper extends Mapper<LongWritable, Text,Text, DoubleW
             String Index = tokens[3].trim();
            
                 
-                if(!Index.trim().equals("INDICE_JOUR") && !Index.trim().equals("")  ){
+             
                     String date = tokens[0].trim();
+                    double closePrice = 0;
+                    if(Utils.isDouble(Index)){
+                      closePrice = Double.parseDouble(Index); 
+                    }
+                     
               
-                    double closePrice = Double.parseDouble(Index); 
+                  
               
                     context.write(new Text(date), new DoubleWritable(closePrice));
-                }
+            
             
                 
                 
@@ -34,4 +48,5 @@ public class MovingAverageMapper extends Mapper<LongWritable, Text,Text, DoubleW
        
       
     }
+ 
 }

@@ -13,9 +13,18 @@ public class AverageMaxMinIndexMapper extends Mapper<LongWritable, Text, Text, D
     
        
     private   DoublePair pair = new DoublePair();
+    private boolean skipFirstLine = true;
 
+
+
+  
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+         
+        if (skipFirstLine) {
+            skipFirstLine = false;
+            return; // Skip processing the first line
+        }
         String fileNameString = ((FileSplit) context.getInputSplit()).getPath().getName();
         fileNameString = fileNameString.substring(0,fileNameString.length()-4 ); // remove .csv from file name
         Key.set(fileNameString);

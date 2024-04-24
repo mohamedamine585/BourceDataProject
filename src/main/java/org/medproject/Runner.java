@@ -68,17 +68,31 @@ public class Runner {
         job4.setOutputKeyClass(Text.class);
         job4.setOutputValueClass(DoubleWritable.class);
       
+           
+        Job job5 = Job.getInstance(conf,"Top Transactioners");
+        job5.setJarByClass(Runner.class);
+        
+
+        job5.setMapperClass(TopTransactionersMapper.class);
+        
+        job5.setReducerClass(TopTransactionersReducer.class);
+      
+        job5.setOutputKeyClass(Text.class);
+        job5.setOutputValueClass(IntWritable.class);
       
         FileInputFormat.addInputPath(job1, new Path(args[0] +"/indice/"));
         FileInputFormat.addInputPath(job2, new Path(args[0] +"/indice/"));
         FileInputFormat.addInputPath(job3, new Path(args[0] +"/indice/"));
         FileInputFormat.addInputPath(job4, new Path(args[0] +"/cotation/"));
+        FileInputFormat.addInputPath(job5, new Path(args[0] +"/cotation/"));
 
-        FileOutputFormat.setOutputPath(job1, new Path(args[1]+"/indice/output_job1"));
-        FileOutputFormat.setOutputPath(job2, new Path(args[1]+"/indice/output_job2"));
-        FileOutputFormat.setOutputPath(job3, new Path(args[1]+"/indice/output_job3"));
-        FileOutputFormat.setOutputPath(job4, new Path(args[1]+"/cotation/output_job1"));
+        FileOutputFormat.setOutputPath(job1, new Path(args[1]+"/indice/Average_of_Max_Min_Index_Calculation"));
+        FileOutputFormat.setOutputPath(job2, new Path(args[1]+"/indice/Mobile_Average_Calculation"));
+        FileOutputFormat.setOutputPath(job3, new Path(args[1]+"/indice/Deviation_calculation"));
+        FileOutputFormat.setOutputPath(job4, new Path(args[1]+"/cotation/Sector_Analysis"));
+        FileOutputFormat.setOutputPath(job5, new Path(args[1]+"/cotation/Top_Transactioners"));
+        
 
-        System.exit((job1.waitForCompletion(true) && job2.waitForCompletion(true) && job3.waitForCompletion(true) && job4.waitForCompletion(true)) ? 0 : 1);
+        System.exit((job1.waitForCompletion(true) && job2.waitForCompletion(true) && job3.waitForCompletion(true) && job4.waitForCompletion(true) && job5.waitForCompletion(true)) ? 0 : 1);
     }
 }

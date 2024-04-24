@@ -1,35 +1,37 @@
 package org.medproject;
 
 import java.io.IOException;
-import org.apache.hadoop.io.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
 
-import org.apache.hadoop.mapreduce.*;
 
-public class TopTransactionersReducer extends Reducer<Text, IntWritable, Text, DoubleWritable> {
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class TopTransactionersReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+    private TreeMap<Integer, Text> sortedTransactioners = new TreeMap<>(Comparator.reverseOrder());
 
     @Override
     public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-        int totalTransactions = 0;
-        int count = 0;
-     
-        for (IntWritable value : values) {
-            if(value.get() != 0){
-                totalTransactions += value.get();
-                count++;
-            }
-            
-         
-            
-        }
-        
+        Integer totalTransactions = 0;
 
-        context.write(key, new DoubleWritable(totalTransactions));
-        Text averagekey = new Text("Average of transactions for ");
-        averagekey.append(key.getBytes(), 0, key.getBytes().length);
-        if(count != 0){
-            context.write(averagekey,new DoubleWritable(totalTransactions/count));
+        // Summing up the transaction values for the key
+        for (IntWritable value : values) {
+            totalTransactions += value.get();
         }
-       
-        
+
+        // Add the key-value pair to the TreeMap for sorting
+        sortedTransactioners.put(totalTransactions, new Text(key));
+    }
+
+    @Override
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+        // Output the sorted transactioners
+        for (Map.Entry<Integer, Text> entry : sortedTransactioners.entrySet()) {
+            context.write(entry.getValue(), new IntWritable(entry.getKey()));
+        }
     }
 }

@@ -23,16 +23,18 @@ public class MovingAverageReducer extends Reducer<Text, DoubleWritable, Text, Do
         }
         double sum = 0.0;
         int count = 0;
-        context.write(new Text("fileName"), null);
+        
         for (double price : prices) {
             sum += price;
             count++;
             if (count >= WINDOW_SIZE) {
                 double movingAverage = sum / WINDOW_SIZE;
-               
                 context.write(key, new DoubleWritable(movingAverage));
+               
+               
                 sum -= prices.get(count - WINDOW_SIZE);
             }
+            
         }
     }
 }

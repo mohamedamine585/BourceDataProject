@@ -29,7 +29,8 @@ public class MovingAverageReducer extends Reducer<Text, DoubleWritable, Text, Do
             count++;
             if (count >= WINDOW_SIZE) {
                 double movingAverage = sum / WINDOW_SIZE;
-                context.write(key, new DoubleWritable(movingAverage));
+                
+                context.write(new Text(key.toString() + ","), new DoubleWritable(movingAverage));
                
                
                 sum -= prices.get(count - WINDOW_SIZE);

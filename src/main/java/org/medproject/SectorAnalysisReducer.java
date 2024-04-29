@@ -54,9 +54,11 @@ public class SectorAnalysisReducer extends Reducer<Text, DoubleWritable, Text, T
         double rateOfReturn = (count > 1) ? (prices.get(count - 1) - prices.get(0)) / prices.get(0) : 0.0;
 
         // Prepare output value
-        String output = "Average Closing Price: " + average + ", Standard Deviation: " + stdDev + ", Rate of Return: " + rateOfReturn;
+      /*  String output = "Average Closing Price: " + average + ", Standard Deviation: " + stdDev + ", Rate of Return: " + rateOfReturn;
+        outputValue.set(output);*/ 
+
+        String output = "," + average + "," + stdDev + "," + rateOfReturn;
         outputValue.set(output);
-        
         // Output sector along with metrics
         context.write(key, outputValue);
     }
